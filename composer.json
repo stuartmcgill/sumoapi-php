@@ -1,6 +1,7 @@
 {
     "name": "stuartmcgill/sumoapi-php",
     "description": "A PHP wrapper for https://sumo-api.com/",
+    "type": "library",
     "license": "GPL-3.0-or-later",
     "autoload": {
         "psr-4": {
