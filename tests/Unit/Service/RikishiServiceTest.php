@@ -42,6 +42,30 @@ class RikishiServiceTest extends TestCase
     }
 
     #[Test]
+    public function fetchAll(): void
+    {
+        $json = file_get_contents(__DIR__ . '/../../_data/rikishis.json');
+
+        $mockResponse = Mockery::mock(Response::class);
+        $mockResponse
+            ->expects('getBody->__toString')
+            ->once()
+            ->andReturn($json);
+
+        $mockClient = Mockery::mock(Client::class);
+        $mockClient
+            ->expects('get')
+            ->once()
+            ->with('https://sumo-api.com/api/rikishis')
+            ->andReturn($mockResponse);
+
+        $service = new RikishiService($mockClient);
+        $rikishis = $service->fetchAll();
+
+        $this->assertCount(617, $rikishis);
+    }
+
+    #[Test]
     public function fetchMatches(): void
     {
         $json = file_get_contents(__DIR__ . '/../../_data/rikishiMatches.json');

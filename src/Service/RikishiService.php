@@ -13,7 +13,7 @@ use StuartMcGill\SumoApiPhp\Model\RikishiMatch;
 
 class RikishiService
 {
-    private const URL = 'https://sumo-api.com/api/rikishi/';
+    private const URL = 'https://sumo-api.com/api/';
 
     public function __construct(private readonly Client $httpClient)
     {
@@ -21,16 +21,30 @@ class RikishiService
 
     public function fetch(int $rikishiId): Rikishi
     {
-        $response = $this->httpClient->get(self::URL . $rikishiId);
+        $response = $this->httpClient->get(self::URL . "rikishi/$rikishiId");
         $json = (string)$response->getBody();
 
         return (new RikishiFactory())->build(json_decode($json));
     }
 
+    /** @return list<Rikishi> */
+    public function fetchAll(): array
+    {
+        $response = $this->httpClient->get(self::URL . 'rikishis');
+        $data = json_decode((string)$response->getBody());
+
+        $factory = new RikishiFactory();
+
+        return array_values(array_map(
+            callback: static fn (stdClass $rikishiData) => $factory->build($rikishiData),
+            array:$data->records
+        ));
+    }
+
     /** @return list<RikishiMatch> */
     public function fetchMatches(int $rikishiId): array
     {
-        $response = $this->httpClient->get(self::URL . $rikishiId . '/matches');
+        $response = $this->httpClient->get(self::URL . "rikishi/$rikishiId/matches");
         $data = json_decode((string)$response->getBody());
 
         $factory = new RikishiMatchFactory();
