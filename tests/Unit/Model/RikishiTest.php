@@ -13,6 +13,6 @@ class RikishiTest extends TestCase
     #[Test]
     public function create(): void
     {
-     $this->assertTrue(true);
+        $this->assertTrue(true);
     }
 }
