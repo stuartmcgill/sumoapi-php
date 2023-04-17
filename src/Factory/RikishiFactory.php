@@ -14,10 +14,10 @@ class RikishiFactory
     {
         return new Rikishi(
             $rikishiData->id,
-            $rikishiData->sumodbId,
-            $rikishiData->nskId,
+            $rikishiData->sumodbId ?? null,
+            $rikishiData->nskId ?? null,
             $rikishiData->shikonaEn,
-            $rikishiData->shikonaJp,
+            $rikishiData->shikonaJp ?? null,
             $rikishiData->currentRank,
             $rikishiData->heya,
             new DateTime($rikishiData->birthDate),
