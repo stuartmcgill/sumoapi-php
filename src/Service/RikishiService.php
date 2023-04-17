@@ -54,4 +54,9 @@ class RikishiService
             array:$data->records
         ));
     }
+
+    public static function factory(): self
+    {
+        return new self(new Client());
+    }
 }
