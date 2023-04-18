@@ -38,7 +38,7 @@ class RikishiServiceTest extends TestCase
         $rikishi = $service->fetch(1);
 
         $this->assertSame(1, $rikishi->id);
-        $this->assertSame('Takakeisho', $rikishi->name);
+        $this->assertSame('Takakeisho', $rikishi->shikonaEn);
     }
 
     #[Test]

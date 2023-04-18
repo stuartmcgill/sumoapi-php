@@ -29,10 +29,12 @@ $service = RikishiService::factory();
 
 // Fetch a single rikishi 
 $rikishi = $service->fetch(1);
-echo $rikishi->nameJp . "\n";
+
+echo $rikishi->shikonaJp . "\n";
 
 // Fetch all rikishis
 $rikishis = $service->fetchAll();
+
 $totalMass = array_reduce(
     array: $rikishis,
     callback: static fn (float $total, Rikishi $rikishi) => $total + $rikishi->weight,
@@ -42,6 +44,7 @@ echo "The total mass of all the wrestlers is $totalMass kg\n";
 
 // Fetch all of a rikishi's matches
 $matches = $service->fetchMatches(1);
+
 $oshidashiWins = array_filter(
     array: $matches,
     callback: static fn (RikishiMatch $match) =>

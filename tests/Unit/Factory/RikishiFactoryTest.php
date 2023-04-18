@@ -19,8 +19,8 @@ class RikishiFactoryTest extends TestCase
         $rikishi = $factory->build($json);
 
         $this->assertSame(1, $rikishi->id);
-        $this->assertSame('Takakeisho', $rikishi->name);
-        $this->assertSame('貴景勝　光信', $rikishi->nameJp);
-        $this->assertSame('1996-08-05', $rikishi->dateOfBirth->format('Y-m-d'));
+        $this->assertSame('Takakeisho', $rikishi->shikonaEn);
+        $this->assertSame('貴景勝　光信', $rikishi->shikonaJp);
+        $this->assertSame('1996-08-05', $rikishi->birthDate->format('Y-m-d'));
     }
 }
