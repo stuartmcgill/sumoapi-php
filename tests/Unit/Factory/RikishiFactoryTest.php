@@ -23,4 +23,17 @@ class RikishiFactoryTest extends TestCase
         $this->assertSame('貴景勝　光信', $rikishi->shikonaJp);
         $this->assertSame('1996-08-05', $rikishi->birthDate->format('Y-m-d'));
     }
+
+    #[Test]
+    /** When wrestlers are first added to the API they may have less data than normal */
+    public function buildNewStarter(): void
+    {
+        $json = json_decode(file_get_contents(__DIR__ . '/../../_data/rikishi_new_starter.json'));
+
+        $factory = new RikishiFactory();
+        $rikishi = $factory->build($json);
+
+        $this->assertSame(8846, $rikishi->id);
+        $this->assertSame('Daishoheki', $rikishi->shikonaEn);
+    }
 }

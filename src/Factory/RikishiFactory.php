@@ -18,7 +18,7 @@ class RikishiFactory
             $rikishiData->nskId ?? null,
             $rikishiData->shikonaEn,
             $rikishiData->shikonaJp ?? null,
-            $rikishiData->currentRank,
+            $rikishiData->currentRank ?? null,
             $rikishiData->heya,
             new DateTime($rikishiData->birthDate),
             $rikishiData->shusshin,
