@@ -15,6 +15,7 @@ class RikishiMatch
         public readonly string $eastRank,
         public readonly int $westId,
         public readonly string $westShikona,
+        public readonly string $westRank,
         public readonly string $kimarite,
         public readonly int $winnerId,
         public readonly string $winnerEn,

@@ -20,6 +20,7 @@ class RikishiMatchFactory
             $rikishiMatchData->eastRank,
             $rikishiMatchData->westId,
             $rikishiMatchData->westShikona,
+            $rikishiMatchData->westRank,
             $rikishiMatchData->kimarite,
             $rikishiMatchData->winnerId,
             $rikishiMatchData->winnerEn,
