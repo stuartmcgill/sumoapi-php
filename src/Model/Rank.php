@@ -6,7 +6,7 @@ namespace StuartMcGill\SumoApiPhp\Model;
 
 class Rank
 {
-    public function __construct(private readonly string $apiRank)
+    public function __construct(private readonly ?string $apiRank)
     {
     }
 

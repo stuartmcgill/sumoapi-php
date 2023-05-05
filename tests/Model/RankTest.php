@@ -66,9 +66,15 @@ class RankTest extends TestCase
         ];
     }
 
-    public function notFound(): void
+    public function unknownRank(): void
     {
         $rank = new Rank('Banzuke-gai');
+        $this->assertNull($rank->division());
+    }
+
+    public function rankMissing(): void
+    {
+        $rank = new Rank(null);
         $this->assertNull($rank->division());
     }
 }
