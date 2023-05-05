@@ -22,4 +22,19 @@ class RikishiMatch
         public readonly string $winnerJp,
     ) {
     }
+
+    public function isEast(int $rikishiId): bool
+    {
+        return $rikishiId === $this->eastId;
+    }
+
+    public function isWest(int $rikishiId): bool
+    {
+        return $rikishiId === $this->westId;
+    }
+
+    public function isWinner(int $rikishiId): bool
+    {
+        return $rikishiId === $this->winnerId;
+    }
 }
