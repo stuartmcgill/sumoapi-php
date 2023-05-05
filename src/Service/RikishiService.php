@@ -125,7 +125,7 @@ class RikishiService
     /** @codeCoverageIgnore */
     public static function factory(): self
     {
-        $config = include __DIR__ . '/../../../config/config.php';
+        $config = include __DIR__ . '/../../config/config.php';
 
         return new self(new Client(), $config);
     }
