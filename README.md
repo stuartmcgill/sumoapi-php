@@ -2,7 +2,12 @@
 
 ![Code coverage badge](https://github.com/stuartmcgill/sumoapi-php/blob/image-data/coverage.svg)
 
-This library provides a PHP wrapper for https://sumo-api.com/.
+This library provides a PHP wrapper for https://sumo-api.com/. Currently the following functionality
+is available:
+
+- Fetch all rikishis
+- Fetch a rikishi by ID
+- Fetch a rikishi's matches
 
 # Usage
 

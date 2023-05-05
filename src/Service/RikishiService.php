@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace StuartMcGill\SumoApiPhp\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise\Utils;
+use InvalidArgumentException;
 use stdClass;
 use StuartMcGill\SumoApiPhp\Factory\RikishiFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiMatchFactory;
@@ -14,6 +16,7 @@ use StuartMcGill\SumoApiPhp\Model\RikishiMatch;
 class RikishiService
 {
     private const URL = 'https://sumo-api.com/api/';
+    private const MAX_PARALLEL_CALLS = 50;
 
     public function __construct(private readonly Client $httpClient)
     {
@@ -38,6 +41,38 @@ class RikishiService
         return array_values(array_map(
             callback: static fn (stdClass $rikishiData) => $factory->build($rikishiData),
             array:$data->records
+        ));
+    }
+
+    /**
+     * Fetches the details of the requested wrestlers (max. 50) in parallel
+     *
+     * @param list<int> $ids
+     * @return list<Rikishi>
+     */
+    public function fetchSome(array $ids): array
+    {
+        if (count($ids) > self::MAX_PARALLEL_CALLS) {
+            throw new InvalidArgumentException(
+                'The maximum number of IDs that can be requested in one call is '
+                . self::MAX_PARALLEL_CALLS
+            );
+        }
+
+        $baseUrl = self::URL . 'rikishi/';
+
+        $promises = array_map(
+            callback: fn (int $id) => $this->httpClient->getAsync($baseUrl . $id),
+            array: $ids,
+        );
+        $responses = Utils::settle(Utils::unwrap($promises))->wait();
+
+        $factory = new RikishiFactory();
+
+        return array_values(array_map(
+            static fn (array $response) =>
+                $factory->build(json_decode((string)$response['value']->getBody())),
+            $responses,
         ));
     }
 

@@ -13,7 +13,7 @@ class RikishiFactoryTest extends TestCase
     #[Test]
     public function build(): void
     {
-        $json = json_decode(file_get_contents(__DIR__ . '/../../_data/rikishi.json'));
+        $json = json_decode(file_get_contents(__DIR__ . '/../../_data/rikishi_1.json'));
 
         $factory = new RikishiFactory();
         $rikishi = $factory->build($json);
