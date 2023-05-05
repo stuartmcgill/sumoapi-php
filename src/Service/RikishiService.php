@@ -108,6 +108,9 @@ class RikishiService
         $divisionData = array_values(array_filter(
             array: $data->records,
             callback: static function (stdClass $rikishiData) use ($division) {
+                if (empty($rikishiData->currentRank)) {
+                    return false;
+                }
                 $rank = new Rank($rikishiData->currentRank);
 
                 return $rank->division() === $division;

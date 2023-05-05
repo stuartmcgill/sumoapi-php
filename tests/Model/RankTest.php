@@ -71,10 +71,4 @@ class RankTest extends TestCase
         $rank = new Rank('Banzuke-gai');
         $this->assertNull($rank->division());
     }
-
-    public function rankMissing(): void
-    {
-        $rank = new Rank(null);
-        $this->assertNull($rank->division());
-    }
 }
