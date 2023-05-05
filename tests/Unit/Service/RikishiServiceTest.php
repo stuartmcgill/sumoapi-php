@@ -26,7 +26,7 @@ class RikishiServiceTest extends TestCase
             json: file_get_contents(__DIR__ . '/../../_data/rikishi_1.json')
         );
 
-        $service = new RikishiService($mockClient);
+        $service = $this->createService($mockClient);
         $rikishi = $service->fetch(1);
 
         $this->assertSame(1, $rikishi->id);
@@ -36,22 +36,7 @@ class RikishiServiceTest extends TestCase
     #[Test]
     public function fetchAll(): void
     {
-        $json = file_get_contents(__DIR__ . '/../../_data/rikishis.json');
-
-        $mockResponse = Mockery::mock(Response::class);
-        $mockResponse
-            ->expects('getBody->__toString')
-            ->once()
-            ->andReturn($json);
-
-        $mockClient = Mockery::mock(Client::class);
-        $mockClient
-            ->expects('get')
-            ->once()
-            ->with('https://sumo-api.com/api/rikishis')
-            ->andReturn($mockResponse);
-
-        $service = new RikishiService($mockClient);
+        $service = $this->createService($this->mockFetchAll());
         $rikishis = $service->fetchAll();
 
         $this->assertCount(617, $rikishis);
@@ -65,7 +50,7 @@ class RikishiServiceTest extends TestCase
             2 => file_get_contents(__DIR__ . '/../../_data/rikishi_2.json'),
         ]);
 
-        $service = new RikishiService($mockClient);
+        $service = $this->createService($mockClient);
         $rikishis = $service->fetchSome([1, 2]);
 
         $this->assertCount(2, $rikishis);
@@ -74,7 +59,7 @@ class RikishiServiceTest extends TestCase
     #[Test]
     public function fetchSomeWithTooManyWrestlers(): void
     {
-        $service = new RikishiService(Mockery::mock(Client::class));
+        $service = new RikishiService(Mockery::mock(Client::class), []);
 
         $this->expectException(InvalidArgumentException::class);
         $service->fetchSome(array_fill(0, 51, 0));
@@ -98,10 +83,50 @@ class RikishiServiceTest extends TestCase
             ->with('https://sumo-api.com/api/rikishi/1/matches')
             ->andReturn($mockResponse);
 
-        $service = new RikishiService($mockClient);
+        $service = $this->createService($mockClient);
         $matches = $service->fetchMatches(1);
 
         $this->assertCount(622, $matches);
+    }
+
+    #[Test]
+    public function fetchDivision(): void
+    {
+        $mockClient = $this->mockFetchAll();
+
+        $service = $this->createService($mockClient);
+        $rikishis = $service->fetchDivision('Makuuchi');
+
+        $this->assertCount(42, $rikishis);
+    }
+
+    #[Test]
+    public function fetchNonExistentDivision(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $service = new RikishiService(Mockery::mock(Client::class), ['divisions' => ['First']]);
+        $service->fetchDivision('Second');
+    }
+
+    private function mockFetchAll(): Client
+    {
+        $json = file_get_contents(__DIR__ . '/../../_data/rikishis.json');
+
+        $mockResponse = Mockery::mock(Response::class);
+        $mockResponse
+            ->expects('getBody->__toString')
+            ->once()
+            ->andReturn($json);
+
+        $mockClient = Mockery::mock(Client::class);
+        $mockClient
+            ->expects('get')
+            ->once()
+            ->with('https://sumo-api.com/api/rikishis')
+            ->andReturn($mockResponse);
+
+        return $mockClient;
     }
 
     private function mockFetchOne(int $id, string $json): Client
@@ -145,5 +170,18 @@ class RikishiServiceTest extends TestCase
         }
 
         return $mockClient;
+    }
+
+    private function createService(Client $httpClient): RikishiService
+    {
+        return new RikishiService($httpClient, $this->createConfig());
+    }
+
+    /** @return array<string, mixed> */
+    private function createConfig(): array
+    {
+        return [
+            'divisions' => ['Makuuchi', 'Juryo', 'Makushita', 'Sandanme', 'Jonidan', 'Jonokuchi'],
+        ];
     }
 }

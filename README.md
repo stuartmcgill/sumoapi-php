@@ -9,6 +9,7 @@ is available:
 - Fetch a rikishi by ID
 - Fetch a rikishi's matches
 - Fetch multiple rikishi (by IDs)
+- Fetch multiple rikishi (by division)
 
 # Usage
 
@@ -58,9 +59,13 @@ $oshidashiWins = array_filter(
 );
 echo 'Takakeisho has won by Oshidashi ' . count($oshidashiWins) . " times\n";
 
-// Fetch some rikishi
+// Fetch some rikishi (by IDs)
 $someRikishi = $service->fetchSome([1, 2]);
 echo 'Fetched details for ' . count($someRikishi) . ' wrestlers';
+
+// Fetch rikishi and filter by division
+$someRikishi = $service->fetchDivision('Makuuchi');
+echo 'Fetched details for ' . count($someRikishi) . ' Makuuchi wrestlers';
 ```
 
 ### Output
@@ -69,4 +74,5 @@ echo 'Fetched details for ' . count($someRikishi) . ' wrestlers';
 The total mass of all the wrestlers is 79935.7 kg
 Takakeisho has won by Oshidashi 190 times
 Fetched details for 2 wrestlers
+Fetched details for 42 Makuuchi wrestlers
 ```

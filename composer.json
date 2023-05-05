@@ -29,8 +29,7 @@
     },
     "require": {
         "php": ">=8.1",
-        "guzzlehttp/guzzle": "^7.5",
-        "laminas/laminas-servicemanager": "^3.15"
+        "guzzlehttp/guzzle": "^7.5"
     },
     "scripts": {
         "tests": "vendor/bin/phpunit tests",

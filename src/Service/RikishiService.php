@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use stdClass;
 use StuartMcGill\SumoApiPhp\Factory\RikishiFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiMatchFactory;
+use StuartMcGill\SumoApiPhp\Model\Rank;
 use StuartMcGill\SumoApiPhp\Model\Rikishi;
 use StuartMcGill\SumoApiPhp\Model\RikishiMatch;
 
@@ -18,7 +19,8 @@ class RikishiService
     private const URL = 'https://sumo-api.com/api/';
     private const MAX_PARALLEL_CALLS = 50;
 
-    public function __construct(private readonly Client $httpClient)
+    /** @param array<string, mixed> $config */
+    public function __construct(private readonly Client $httpClient, private readonly array $config)
     {
     }
 
@@ -90,8 +92,41 @@ class RikishiService
         ));
     }
 
+    /** @return list<Rikishi> */
+    public function fetchDivision(string $division): array
+    {
+        if (!in_array(needle: $division, haystack: $this->config['divisions'])) {
+            throw new InvalidArgumentException(
+                'Please specify one of the following divisions: ' .
+                    implode(separator: ',', array: $this->config['divisions'])
+            );
+        }
+
+        $response = $this->httpClient->get(self::URL . 'rikishis');
+        $data = json_decode((string)$response->getBody());
+
+        $divisionData = array_values(array_filter(
+            array: $data->records,
+            callback: static function (stdClass $rikishiData) use ($division) {
+                $rank = new Rank($rikishiData->currentRank);
+
+                return $rank->division() === $division;
+            }
+        ));
+
+        $factory = new RikishiFactory();
+
+        return array_values(array_map(
+            callback: static fn (stdClass $rikishiData) => $factory->build($rikishiData),
+            array:$divisionData
+        ));
+    }
+
+    /** @codeCoverageIgnore */
     public static function factory(): self
     {
-        return new self(new Client());
+        $config = include __DIR__ . '/../../../config/config.php';
+
+        return new self(new Client(), $config);
     }
 }
