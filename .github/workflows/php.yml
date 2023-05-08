@@ -3,7 +3,7 @@ name: PHP Composer
 on:
   workflow_dispatch:
   push:
-    #    Ignore code coverage badge branch
+    # Ignore code coverage badge branch
     branches-ignore: [ "image-data" ]
 
 permissions:
