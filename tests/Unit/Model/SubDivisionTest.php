@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use StuartMcGill\SumoApiPhp\Model\SubDivision;
 
-class DivisionTest extends TestCase
+class SubDivisionTest extends TestCase
 {
     #[DataProvider('isGreaterThanProvider')]
     #[Test]
