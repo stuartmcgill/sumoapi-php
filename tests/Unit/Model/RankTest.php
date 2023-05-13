@@ -73,18 +73,18 @@ class RankTest extends TestCase
         $this->assertSame(expected: 'Banzuke-gai', actual: $rank->division());
     }
 
-    #[DataProvider('isLessThanProvider')]
+    #[DataProvider('isGreaterThanProvider')]
     #[Test]
-    public function isLessThan(string $apiRankA, string $apiRankB, bool $expected): void
+    public function isGreaterThan(string $apiRankA, string $apiRankB, bool $expected): void
     {
         $rankA = new Rank($apiRankA);
         $rankB = new Rank($apiRankB);
 
-        $this->assertSame(expected: $expected, actual: $rankA->isLessThan($rankB));
+        $this->assertSame(expected: $expected, actual: $rankA->isGreaterThan($rankB));
     }
 
     /** @return array<string, array<string, string>> */
-    public static function isLessThanProvider(): array
+    public static function isGreaterThanProvider(): array
     {
         return [
             'Same' => [
@@ -95,51 +95,61 @@ class RankTest extends TestCase
             'Same division and number, a is greater' => [
                 'a' => 'Maegashira 1 East',
                 'b' => 'Maegashira 1 West',
-                'expected' => false,
+                'expected' => true,
             ],
             'Same division and number, a is lesser' => [
                 'a' => 'Maegashira 1 West',
                 'b' => 'Maegashira 1 East',
-                'expected' => true,
+                'expected' => false,
             ],
             'Same division but different number, a is greater' => [
                 'a' => 'Maegashira 1 West',
                 'b' => 'Maegashira 2 East',
-                'expected' => false,
+                'expected' => true,
             ],
             'Same division but different number, a is lesser' => [
                 'a' => 'Maegashira 2 West',
                 'b' => 'Maegashira 1 East',
-                'expected' => true,
+                'expected' => false,
             ],
             'Yokozuna and Maegashira, a greater' => [
                 'a' => 'Yokozuna 1 East',
                 'b' => 'Maegashira 1 East',
-                'expected' => false,
+                'expected' => true,
             ],
             'Yokozuna and Maegashira, a lesser' => [
                 'a' => 'Maegashira 1 East',
                 'b' => 'Yokozuna 1 East',
-                'expected' => true,
+                'expected' => false,
             ],
             'Intra-sanyaku, a greater' => [
                 'a' => 'Yokozuna 2 East',
                 'b' => 'Ozeki 1 East',
-                'expected' => false,
+                'expected' => true,
             ],
             'Intra-sanyaku, a lesser' => [
                 'a' => 'Sekiwake 2 East',
                 'b' => 'Ozeki 1 East',
-                'expected' => true,
+                'expected' => false,
             ],
             'Different division, a greater' => [
                 'a' => 'Maegashira 1 East',
                 'b' => 'Juryo 1 East',
-                'expected' => false,
+                'expected' => true,
             ],
             'Different division, a lesser' => [
                 'a' => 'Sandanme 1 East',
                 'b' => 'Juryo 1 East',
+                'expected' => false,
+            ],
+            'Alphanumeric check, a lesser' => [
+                'a' => 'Sandanme 10 East',
+                'b' => 'Sandanme 1 East',
+                'expected' => false,
+            ],
+            'Alphanumeric check, a greater' => [
+                'a' => 'Sandanme 1 East',
+                'b' => 'Sandanme 10 East',
                 'expected' => true,
             ],
         ];
