@@ -152,6 +152,16 @@ class RankTest extends TestCase
                 'b' => 'Sandanme 10 East',
                 'expected' => true,
             ],
+            'Check that division is the major factor, a greater' => [
+                'a' => 'Jonidan 2 East',
+                'b' => 'Maegashira 1 West',
+                'expected' => false,
+            ],
+            'Check that division is the major factor, a lesser' => [
+                'a' => 'Maegashira 1 West',
+                'b' => 'Jonidan 2 East',
+                'expected' => true,
+            ],
         ];
     }
 }

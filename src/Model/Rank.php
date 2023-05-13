@@ -41,13 +41,13 @@ class Rank
 
     public function isGreaterThan(Rank $other): bool
     {
-        if ($this->subDivision->isGreaterThan($other->subDivision)) {
-            return true;
+        if ($this->subDivision->name !== $other->subDivision->name) {
+            return $this->subDivision->isGreaterThan($other->subDivision);
         }
 
-        // The lower number (e.g. M1) is the higher rank
-        if ($this->number < $other->number) {
-            return true;
+        if ($this->number !== $other->number) {
+            // The lower number (e.g. M1) is the higher rank
+            return $this->number < $other->number;
         }
 
         // East is higher than West
