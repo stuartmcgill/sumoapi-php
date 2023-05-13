@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.4] - 2023-05-13
+
+### Changed
+- Add `isGreaterThan()` function to `Rank` class
+
 ## [0.0.3] - 2023-05-08
 
 ### Added
