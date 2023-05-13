@@ -6,49 +6,51 @@ namespace StuartMcGill\SumoApiPhp\Model;
 
 class Rank
 {
+    public readonly SubDivision $subDivision;
+    public readonly int $number;
+    public readonly string $side;
+
     public function __construct(private readonly string $apiRank)
     {
+        $matches = [];
+
+        !preg_match(
+            pattern: '/^([[:alpha:]]+) ([\d]{1,3}) (East|West)$/',
+            subject: $this->apiRank,
+            matches: $matches,
+        );
+
+        // We always want at least a sub-division
+        $this->subDivision = new SubDivision($matches[1] ?? $this->apiRank);
+        if (count($matches) === 0) {
+            return;
+        }
+
+        $this->number = (int)$matches[2];
+        $this->side = $matches[3];
     }
 
     public function division(): string
     {
-        if ($this->isMakuuchi()) {
+        if ($this->subDivision->isMakuuchi()) {
             return 'Makuuchi';
         }
 
-        $lowerDivision = $this->findLowerDivision();
-
-        return $lowerDivision ?? $this->apiRank;
+        return $this->subDivision->name;
     }
 
-    private function isMakuuchi(): bool
+    public function isGreaterThan(Rank $other): bool
     {
-        $makuuchiRanks = [
-            'Yokozuna',
-            'Ozeki',
-            'Sekiwake',
-            'Komusubi',
-            'Maegashira',
-        ];
-
-        return count(array_filter(
-            array: $makuuchiRanks,
-            callback: fn (string $makuuchiRank)
-            => str_contains(haystack: $this->apiRank, needle: $makuuchiRank),
-        )) > 0;
-    }
-
-    private function findLowerDivision(): ?string
-    {
-        $config = include __DIR__ . '/../../config/config.php';
-        $divisions = $config['divisions'];
-
-        foreach ($divisions as $division) {
-            if (str_contains(haystack: $this->apiRank, needle: $division)) {
-                return $division;
-            }
+        if ($this->subDivision->name !== $other->subDivision->name) {
+            return $this->subDivision->isGreaterThan($other->subDivision);
         }
 
-        return null;
+        if ($this->number !== $other->number) {
+            // The lower number (e.g. M1) is the higher rank
+            return $this->number < $other->number;
+        }
+
+        // East is higher than West
+        return $this->side < $other->side;
     }
 }
