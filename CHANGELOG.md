@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.1] - 2023-05-13
+
+### Added
+- Prevent PRs from merging if the build fails
+
 ## [0.4.0] - 2023-05-13
 
 ### Changed
