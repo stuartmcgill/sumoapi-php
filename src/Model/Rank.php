@@ -53,4 +53,9 @@ class Rank
         // East is higher than West
         return $this->side < $other->side;
     }
+
+    public function matchesPerBasho(): int
+    {
+        return $this->subDivision->isSekitori() ? 15 : 7;
+    }
 }
