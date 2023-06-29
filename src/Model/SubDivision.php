@@ -43,6 +43,11 @@ class SubDivision
         );
     }
 
+    public function isSekitori(): bool
+    {
+        return $this->isGreaterThan(new SubDivision('Makushita'));
+    }
+
     public function isGreaterThan(SubDivision $other): bool
     {
         if ($this->name === $other->name) {

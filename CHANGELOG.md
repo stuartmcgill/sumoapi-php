@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.2] - 2023-06-29
+
+### Added
+- `Rank::matchesPerBasho()`
+
 ## [0.4.1] - 2023-05-13
 
 ### Added

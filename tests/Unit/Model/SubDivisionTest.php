@@ -55,4 +55,17 @@ class SubDivisionTest extends TestCase
         $division = new SubDivision('Juryo');
         $this->assertFalse($division->isMakuuchi());
     }
+
+    #[Test]
+    public function isSekitori(): void
+    {
+        $division = new SubDivision('Maegashira');
+        $this->assertTrue($division->isSekitori());
+
+        $division = new SubDivision('Juryo');
+        $this->assertTrue($division->isSekitori());
+
+        $division = new SubDivision('Makushita');
+        $this->assertFalse($division->isSekitori());
+    }
 }

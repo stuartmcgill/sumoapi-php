@@ -164,4 +164,21 @@ class RankTest extends TestCase
             ],
         ];
     }
+
+    #[Test]
+    public function matchesPerBashoSekitori(): void
+    {
+        $rank = new Rank('Maegashira 1 East');
+        $this->assertSame(15, $rank->matchesPerBasho());
+
+        $rank = new Rank('Juryo 1 East');
+        $this->assertSame(15, $rank->matchesPerBasho());
+    }
+
+    #[Test]
+    public function matchesPerBashoLowerRankers(): void
+    {
+        $rank = new Rank('Makushita 1 East');
+        $this->assertSame(7, $rank->matchesPerBasho());
+    }
 }
