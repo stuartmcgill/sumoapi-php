@@ -8,11 +8,13 @@ use DomainException;
 
 class SubDivision
 {
+    // Makuuchi is included to enable the ranking of divisions as well as rikishi
     private const RANKING = [
         'Yokozuna',
         'Ozeki',
         'Sekiwake',
         'Komusubi',
+        'Makuuchi',
         'Maegashira',
         'Juryo',
         'Makushita',

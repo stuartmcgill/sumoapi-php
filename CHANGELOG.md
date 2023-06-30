@@ -1,6 +1,11 @@
 # Change Log
 
-## [0.4.3] - 2023-06-20
+## [0.4.4] - 2023-06-30
+
+### Changed
+- `fetchAllByDivision()` is now sorted
+
+## [0.4.3] - 2023-06-30
 
 ### Added
 - `RikishiService::fetchAllByDivision()`
