@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.3] - 2023-06-20
+
+### Added
+- `RikishiService::fetchAllByDivision()`
+
 ## [0.4.2] - 2023-06-29
 
 ### Added

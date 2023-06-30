@@ -46,6 +46,27 @@ class RikishiService
         ));
     }
 
+    /** @return array<string, list<Rikishi>> */
+    public function fetchAllByDivision(): array
+    {
+        return array_reduce(
+            array: $this->fetchAll(),
+            callback: static function (array $grouped, Rikishi $rikishi) {
+                $rank = new Rank($rikishi->currentRank);
+                $division = $rank->division();
+
+                if (!array_key_exists(key: $division, array: $grouped)) {
+                    $grouped[$division] = [];
+                }
+
+                $grouped[$division][] = $rikishi;
+
+                return $grouped;
+            },
+            initial: [],
+        );
+    }
+
     /**
      * Fetches the details of the requested wrestlers (max. 50) in parallel
      *

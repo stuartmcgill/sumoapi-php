@@ -43,6 +43,16 @@ class RikishiServiceTest extends TestCase
     }
 
     #[Test]
+    public function fetchAllByDivision(): void
+    {
+        $service = $this->createService($this->mockFetchAll());
+        $grouped = $service->fetchAllByDivision();
+
+        $this->assertCount(7, $grouped); // Includes Banzuke-gai
+        $this->assertCount(42, $grouped['Makuuchi']);
+    }
+
+    #[Test]
     public function fetchSome(): void
     {
         $mockClient = $this->mockFetchSome([
