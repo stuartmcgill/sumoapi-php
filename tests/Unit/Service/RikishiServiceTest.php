@@ -43,13 +43,27 @@ class RikishiServiceTest extends TestCase
     }
 
     #[Test]
-    public function fetchAllByDivision(): void
+    public function fetchAllByDivisionIncludeBanzukeGai(): void
     {
         $service = $this->createService($this->mockFetchAll());
         $grouped = $service->fetchAllByDivision();
 
-        $this->assertCount(7, $grouped); // Includes Banzuke-gai
+        $this->assertCount(7, $grouped);
         $this->assertCount(42, $grouped['Makuuchi']);
+        $this->assertSame('Makuuchi', array_key_first($grouped));
+        $this->assertSame('Banzuke-gai', array_key_last($grouped));
+    }
+
+    #[Test]
+    public function fetchAllByDivisionExcludeBanzukeGai(): void
+    {
+        $service = $this->createService($this->mockFetchAll());
+        $grouped = $service->fetchAllByDivision(excludeBanzukeGai: true);
+
+        $this->assertCount(6, $grouped);
+        $this->assertCount(42, $grouped['Makuuchi']);
+        $this->assertSame('Makuuchi', array_key_first($grouped));
+        $this->assertSame('Jonokuchi', array_key_last($grouped));
     }
 
     #[Test]

@@ -13,6 +13,7 @@ use StuartMcGill\SumoApiPhp\Factory\RikishiMatchFactory;
 use StuartMcGill\SumoApiPhp\Model\Rank;
 use StuartMcGill\SumoApiPhp\Model\Rikishi;
 use StuartMcGill\SumoApiPhp\Model\RikishiMatch;
+use StuartMcGill\SumoApiPhp\Model\SubDivision;
 
 class RikishiService
 {
@@ -47,13 +48,17 @@ class RikishiService
     }
 
     /** @return array<string, list<Rikishi>> */
-    public function fetchAllByDivision(): array
+    public function fetchAllByDivision(bool $excludeBanzukeGai = false): array
     {
-        return array_reduce(
+        $grouped = array_reduce(
             array: $this->fetchAll(),
-            callback: static function (array $grouped, Rikishi $rikishi) {
+            callback: static function (array $grouped, Rikishi $rikishi) use ($excludeBanzukeGai) {
                 $rank = new Rank($rikishi->currentRank);
                 $division = $rank->division();
+
+                if ($excludeBanzukeGai && $division === 'Banzuke-gai') {
+                    return $grouped;
+                }
 
                 if (!array_key_exists(key: $division, array: $grouped)) {
                     $grouped[$division] = [];
@@ -65,6 +70,21 @@ class RikishiService
             },
             initial: [],
         );
+
+        uksort(
+            array: $grouped,
+            callback: static function (string $a, string $b): int {
+                if ($a === $b) {
+                    return 0;
+                }
+
+                return (new SubDivision($a))->isGreaterThan((new SubDivision($b)))
+                    ? -1
+                    : 1;
+            },
+        );
+
+        return $grouped;
     }
 
     /**
