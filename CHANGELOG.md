@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.6] - 2023-07-01
+
+### Changed
+- Allow more `null` properties (needed for debuting rikishi)
+
 ## [0.4.5] - 2023-07-01
 
 ### Changed
