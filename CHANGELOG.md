@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.7] - 2023-07-01
+
+### Fixed
+- Birthdate warning when creating debuting Rikishi
+
 ## [0.4.6] - 2023-07-01
 
 ### Changed
