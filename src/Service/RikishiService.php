@@ -39,11 +39,16 @@ class RikishiService
         $response = $this->httpClient->get(self::URL . 'rikishis');
         $data = json_decode((string)$response->getBody());
 
-        $factory = new RikishiFactory();
+        $rikishiWithRanks = array_filter(
+            array: $data->records,
+            callback: static fn (stdClass $rikishiData) => isset($rikishiData->currentRank),
+        );
 
+        $factory = new RikishiFactory();
+        
         return array_values(array_map(
             callback: static fn (stdClass $rikishiData) => $factory->build($rikishiData),
-            array:$data->records
+            array: $rikishiWithRanks,
         ));
     }
 

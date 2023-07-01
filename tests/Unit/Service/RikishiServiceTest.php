@@ -12,6 +12,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use StuartMcGill\SumoApiPhp\Model\Rikishi;
 use StuartMcGill\SumoApiPhp\Service\RikishiService;
 
 class RikishiServiceTest extends TestCase
@@ -40,6 +41,19 @@ class RikishiServiceTest extends TestCase
         $rikishis = $service->fetchAll();
 
         $this->assertCount(617, $rikishis);
+    }
+
+    #[Test]
+    public function fetchAllIgnoresRikishiWithoutRank(): void
+    {
+        $service = $this->createService($this->mockFetchAll());
+
+        $kotohanashiro = array_filter(
+            array: $service->fetchAll(),
+            callback: static fn (Rikishi $rikishi) => $rikishi->shikonaEn === 'Kotohanashiro',
+        );
+
+        $this->assertCount(0, $kotohanashiro);
     }
 
     #[Test]

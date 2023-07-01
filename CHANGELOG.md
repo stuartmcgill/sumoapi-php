@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.78 - 2023-07-01
+
+### Changed
+- Ignore Rikishi with no rank
+
 ## [0.4.7] - 2023-07-01
 
 ### Fixed
