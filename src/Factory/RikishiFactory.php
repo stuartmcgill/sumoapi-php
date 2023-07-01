@@ -20,7 +20,7 @@ class RikishiFactory
             $rikishiData->shikonaJp ?? null,
             $rikishiData->currentRank ?? null,
             $rikishiData->heya ?? null,
-            $rikishiData->birthDate ? new DateTime($rikishiData->birthDate) : null,
+            isset($rikishiData->birthDate) ? new DateTime($rikishiData->birthDate) : null,
             $rikishiData->shusshin ?? null,
             $rikishiData->height ?? null,
             $rikishiData->weight ?? null,
