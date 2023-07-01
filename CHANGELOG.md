@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.5] - 2023-07-01
+
+### Changed
+- Allow for `null` heya
+
 ## [0.4.4] - 2023-06-30
 
 ### Changed
