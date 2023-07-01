@@ -20,10 +20,10 @@ class RikishiFactory
             $rikishiData->shikonaJp ?? null,
             $rikishiData->currentRank ?? null,
             $rikishiData->heya ?? null,
-            new DateTime($rikishiData->birthDate),
-            $rikishiData->shusshin,
-            $rikishiData->height,
-            $rikishiData->weight,
+            $rikishiData->birthDate ? new DateTime($rikishiData->birthDate) : null,
+            $rikishiData->shusshin ?? null,
+            $rikishiData->height ?? null,
+            $rikishiData->weight ?? null,
             $rikishiData->debut,
         );
     }
