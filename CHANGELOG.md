@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.4.8] - 2023-07-10
+
+### Added
+- Installation section to `README`
+
 ## [0.4.7] - 2023-07-01
 
 ### Fixed

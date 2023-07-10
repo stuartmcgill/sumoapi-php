@@ -11,6 +11,10 @@ is available:
 - Fetch multiple rikishi (by IDs)
 - Fetch multiple rikishi (by division)
 
+# Installation
+
+`composer require stuartmcgill/sumoapi-php`
+
 # Usage
 
 See https://sumo-api.com/api-guide for details of the API endpoints.
