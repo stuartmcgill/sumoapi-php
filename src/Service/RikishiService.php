@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use stdClass;
 use StuartMcGill\SumoApiPhp\Factory\RikishiFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiMatchFactory;
+use StuartMcGill\SumoApiPhp\Model\Head2HeadSummary;
 use StuartMcGill\SumoApiPhp\Model\Rank;
 use StuartMcGill\SumoApiPhp\Model\Rikishi;
 use StuartMcGill\SumoApiPhp\Model\RikishiMatch;
@@ -164,6 +165,17 @@ class RikishiService
             callback: static fn (stdClass $rikishiData) => $factory->build($rikishiData),
             array:$divisionData
         ));
+    }
+
+    /** @param list<int> $opponents */
+    public function fetchHead2Heads(int $id, array $opponents): Head2HeadSummary
+    {
+        if (count($opponents) > self::MAX_PARALLEL_CALLS) {
+            throw new InvalidArgumentException(
+                'The maximum number of IDs that can be requested in one call is '
+                . self::MAX_PARALLEL_CALLS
+            );
+        }
     }
 
     /** @codeCoverageIgnore */

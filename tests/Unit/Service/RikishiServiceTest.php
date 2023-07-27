@@ -86,6 +86,9 @@ class RikishiServiceTest extends TestCase
         $service = new RikishiService(Mockery::mock(Client::class), []);
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The maximum number of IDs that can be requested in one call is 50',
+        );
         $service->fetchSome(array_fill(0, 51, 0));
     }
 
@@ -131,6 +134,50 @@ class RikishiServiceTest extends TestCase
 
         $service = new RikishiService(Mockery::mock(Client::class), ['divisions' => ['First']]);
         $service->fetchDivision('Second');
+    }
+
+    #[Test]
+    public function fetchHead2Heads(): void
+    {
+        $id = 1;
+        $otherIds = [2, 3];
+        
+        $mockClient = $this->mockFetchHead2Heads(
+            $id,
+            [
+                2 => ['wins' => 10, 'losses' => 20],
+                3 => ['wins' => 30, 'losses' => 0],
+            ],
+        );
+
+        $service = $this->createService($mockClient);
+        $head2HeadSummary = $service->fetchHead2Heads($id, $otherIds);
+
+        $this->assertSame(1, $head2HeadSummary->id);
+        $this->assertCount(2, $head2HeadSummary->records);
+
+        $this->assertEquals(
+            [
+                new Head2Head(1, 2, 10, 20),
+                new Head2Head(1, 3, 30, 0),
+            ],
+            $head2HeadSummary->records,
+        );
+    }
+
+    #[Test]
+    public function fetchHead2HeadsWithTooManyOpponents(): void
+    {
+        $service = new RikishiService(Mockery::mock(Client::class), []);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The maximum number of IDs that can be requested in one call is 50',
+        );
+        $service->fetchHead2Heads(
+            id: 1,
+            opponents: array_fill(start_index: 0, count: 51, value: 0),
+        );
     }
 
     private function mockFetchAll(): Client
