@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Unit\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
 use Mockery;
@@ -144,7 +148,6 @@ class RikishiServiceTest extends TestCase
         $otherIds = [2, 3];
         
         $mockClient = $this->mockFetchMatchups(
-            $id,
             [
                 2 => ['wins' => 10, 'losses' => 20],
                 3 => ['wins' => 30, 'losses' => 0],
@@ -154,15 +157,15 @@ class RikishiServiceTest extends TestCase
         $service = $this->createService($mockClient);
         $matchupSummary = $service->fetchMatchups($id, $otherIds);
 
-        $this->assertSame(1, $matchupSummary->id);
-        $this->assertCount(2, $matchupSummary->records);
+        $this->assertSame(1, $matchupSummary->rikishiId);
+        $this->assertCount(2, $matchupSummary->matchups);
 
         $this->assertEquals(
             [
-                new Matchup(1, 2, 10, 20),
-                new Matchup(1, 3, 30, 0),
+                new Matchup(rikishiId: 1, opponentId: 2, rikishiWins: 10, opponentWins: 20),
+                new Matchup(rikishiId: 1, opponentId: 3, rikishiWins: 30, opponentWins: 0),
             ],
-            $matchupSummary->records,
+            $matchupSummary->matchups,
         );
     }
 
@@ -176,8 +179,8 @@ class RikishiServiceTest extends TestCase
             'The maximum number of IDs that can be requested in one call is 50',
         );
         $service->fetchMatchups(
-            id: 1,
-            opponents: array_fill(start_index: 0, count: 51, value: 0),
+            rikishiId: 1,
+            opponentIds: array_fill(start_index: 0, count: 51, value: 0),
         );
     }
 
@@ -242,6 +245,21 @@ class RikishiServiceTest extends TestCase
         }
 
         return $mockClient;
+    }
+
+    private function mockFetchMatchups(array $matchups)
+    {
+        $mockResponses = array_map(
+            callback: static fn($matchup) => new Response(
+                status: 200,
+                headers: ['X-Foo' => 'Bar'],
+                body: '{"opponentWins": ' . $matchup['losses'] .',"rikishiWins": ' . $matchup['wins'] .'}',
+            ),
+            array: $matchups
+        );
+
+        $mockHandler = new MockHandler($mockResponses);
+        return new Client(['handler' => HandlerStack::create($mockHandler)]);
     }
 
     private function createService(Client $httpClient): RikishiService

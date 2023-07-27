@@ -9,11 +9,11 @@ use StuartMcGill\SumoApiPhp\Model\Matchup;
 
 class MatchupFactory
 {
-    public function build(stdClass $matchupData): Matchup
+    public function build(int $rikishiId, int $opponentId, stdClass $matchupData): Matchup
     {
         return new Matchup(
-            $matchupData->rikishiId,
-            $matchupData->opponentId,
+            $rikishiId,
+            $opponentId,
             $matchupData->rikishiWins,
             $matchupData->opponentWins,
         );

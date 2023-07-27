@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace StuartMcGill\SumoApiPhp\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Pool;
 use GuzzleHttp\Promise\Utils;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
 use stdClass;
+use StuartMcGill\SumoApiPhp\Factory\MatchupFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiMatchFactory;
 use StuartMcGill\SumoApiPhp\Model\MatchupSummary;
@@ -162,29 +167,35 @@ class RikishiService
         ));
     }
 
-    /** @param list<int> $opponents */
-    public function fetchMatchups(int $id, array $opponents): MatchupSummary
+    /** @param list<int> $opponentIds */
+    public function fetchMatchups(int $rikishiId, array $opponentIds): MatchupSummary
     {
-        $this->assertMaxParallelCalls(count($opponents));
+        $this->assertMaxParallelCalls(count($opponentIds));
 
-        $baseUrl = self::URL . "rikishi/$id/matches/";
+        $baseUrl = self::URL . "rikishi/$rikishiId/matches/";
 
-        $promises = array_map(
-            callback: fn (int $id) => $this->httpClient->getAsync($baseUrl . $id),
-            array: array_values($opponents),
-        );
-        $responses = Utils::settle(Utils::unwrap($promises))->wait();
+        $requests = function () use ($opponentIds, $baseUrl) {
+            foreach ($opponentIds as $opponentId) {
+                yield new Request('GET', $baseUrl . $opponentId);
+            }
+        };
 
         $factory = new MatchupFactory();
+        $matchups = [];
+        $pool = new Pool($this->httpClient, $requests(), [
+            'concurrency' => 5,
+            'fulfilled' => function (Response $response, $index) use ($rikishiId, $opponentIds, &$matchups, $factory) {
+                // this is delivered each successful response
+                $opponentId = $opponentIds[$index];
+                $json = json_decode((string)$response->getBody());
 
-        return MatchupSummary::build(
-            $id,
-            array_values(array_map(
-                static fn (array $response) =>
-                    $factory->build(json_decode((string)$response['value']->getBody())),
-                    $responses,
-                )
-        );
+                $matchups[] = $factory->build($rikishiId, $opponentId, $json);
+            },
+        ]);
+        $promise = $pool->promise();
+        $promise->wait();
+
+        return new MatchupSummary($rikishiId, $matchups);
     }
 
     private function assertMaxParallelCalls(int $numCalls): void
