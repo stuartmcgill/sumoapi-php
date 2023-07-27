@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use StuartMcGill\SumoApiPhp\Factory\RikishiFactory;
 
-class Head2HeadFactoryTest extends TestCase
+class MatchupFactoryTest extends TestCase
 {
     #[Test]
     public function build(): void

@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use stdClass;
 use StuartMcGill\SumoApiPhp\Factory\RikishiFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiMatchFactory;
-use StuartMcGill\SumoApiPhp\Model\Head2HeadSummary;
+use StuartMcGill\SumoApiPhp\Model\MatchupSummary;
 use StuartMcGill\SumoApiPhp\Model\Rank;
 use StuartMcGill\SumoApiPhp\Model\Rikishi;
 use StuartMcGill\SumoApiPhp\Model\RikishiMatch;
@@ -163,7 +163,7 @@ class RikishiService
     }
 
     /** @param list<int> $opponents */
-    public function fetchHead2Heads(int $id, array $opponents): Head2HeadSummary
+    public function fetchMatchups(int $id, array $opponents): MatchupSummary
     {
         $this->assertMaxParallelCalls(count($opponents));
 
@@ -175,9 +175,9 @@ class RikishiService
         );
         $responses = Utils::settle(Utils::unwrap($promises))->wait();
 
-        $factory = new Head2HeadFactory();
+        $factory = new MatchupFactory();
 
-        return Head2HeadSummary::build(
+        return MatchupSummary::build(
             $id,
             array_values(array_map(
                 static fn (array $response) =>

@@ -7,33 +7,33 @@ namespace Unit\Model;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use StuartMcGill\SumoApiPhp\Model\Head2Head;
+use StuartMcGill\SumoApiPhp\Model\Matchup;
 
-class Head2HeadTest extends TestCase
+class MatchupTest extends TestCase
 {
     #[Test]
     public function winningPercentageNeverMet(): void
     {
-        $head2Head = new Head2Head(
+        $matchup = new Matchup(
             rikishiId: 1,
             opponentId: 2,
             rikishiWins: 0,
             opponentWins: 0,
         );
-        $this->assertSame(null, $head2Head->winningPercentage());
+        $this->assertSame(null, $matchup->winningPercentage());
     }
 
     #[DataProvider('winningPercentageProvider')]
     #[Test]
     public function winningPercentage(int $rikishiWins, int $opponentWins, int $expected): void
     {
-        $head2Head = new Head2Head(
+        $matchup = new Matchup(
             rikishiId: 1,
             opponentId: 2,
             rikishiWins: $rikishiWins,
             opponentWins: $opponentWins,
         );
-        $this->assertSame($expected, $head2Head->winningPercentage());
+        $this->assertSame($expected, $matchup->winningPercentage());
     }
 
     /** @return array<string, array<string, int>> */

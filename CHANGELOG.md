@@ -3,7 +3,7 @@
 ## [0.5.0] - 2023-07-27
 
 ### Added
-- Head2Head API
+- Matchups API
 
 ## [0.4.8] - 2023-07-10
 

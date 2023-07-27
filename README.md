@@ -73,8 +73,8 @@ $someRikishi = $service->fetchDivision('Makuuchi');
 echo 'Fetched details for ' . count($someRikishi) . ' Makuuchi wrestlers';
 
 // Fetch rikishi matchups (head-to-heads)
-$head2HeadSummary = $service->fetchMatchups(1, [2]);
-echo 'Asanoyama has fought Takakeisho' . count($head2HeadSummary) . ' times';
+$matchupSummary = $service->fetchMatchups(1, [2]);
+echo 'Asanoyama has fought Takakeisho' . count($matchupSummary) . ' times';
 
 ```
 

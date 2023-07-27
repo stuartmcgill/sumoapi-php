@@ -12,6 +12,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use StuartMcGill\SumoApiPhp\Model\Matchup;
 use StuartMcGill\SumoApiPhp\Service\RikishiService;
 
 class RikishiServiceTest extends TestCase
@@ -137,12 +138,12 @@ class RikishiServiceTest extends TestCase
     }
 
     #[Test]
-    public function fetchHead2Heads(): void
+    public function fetchMatchups(): void
     {
         $id = 1;
         $otherIds = [2, 3];
         
-        $mockClient = $this->mockFetchHead2Heads(
+        $mockClient = $this->mockFetchMatchups(
             $id,
             [
                 2 => ['wins' => 10, 'losses' => 20],
@@ -151,22 +152,22 @@ class RikishiServiceTest extends TestCase
         );
 
         $service = $this->createService($mockClient);
-        $head2HeadSummary = $service->fetchHead2Heads($id, $otherIds);
+        $matchupSummary = $service->fetchMatchups($id, $otherIds);
 
-        $this->assertSame(1, $head2HeadSummary->id);
-        $this->assertCount(2, $head2HeadSummary->records);
+        $this->assertSame(1, $matchupSummary->id);
+        $this->assertCount(2, $matchupSummary->records);
 
         $this->assertEquals(
             [
-                new Head2Head(1, 2, 10, 20),
-                new Head2Head(1, 3, 30, 0),
+                new Matchup(1, 2, 10, 20),
+                new Matchup(1, 3, 30, 0),
             ],
-            $head2HeadSummary->records,
+            $matchupSummary->records,
         );
     }
 
     #[Test]
-    public function fetchHead2HeadsWithTooManyOpponents(): void
+    public function fetchMatchupsWithTooManyOpponents(): void
     {
         $service = new RikishiService(Mockery::mock(Client::class), []);
 
@@ -174,7 +175,7 @@ class RikishiServiceTest extends TestCase
         $this->expectExceptionMessage(
             'The maximum number of IDs that can be requested in one call is 50',
         );
-        $service->fetchHead2Heads(
+        $service->fetchMatchups(
             id: 1,
             opponents: array_fill(start_index: 0, count: 51, value: 0),
         );

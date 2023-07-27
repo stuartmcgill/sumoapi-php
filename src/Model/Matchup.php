@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace StuartMcGill\SumoApiPhp\Model;
 
-class Head2Head
+class Matchup
 {
     public function __construct(
         public readonly int $rikishiId,

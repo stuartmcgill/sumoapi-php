@@ -6,12 +6,12 @@ namespace StuartMcGill\SumoApiPhp\Model;
 
 use stdClass;
 
-class Head2HeadSummary
+class MatchupSummary
 {
-    /** @param list<Head2Head> $head2Heads */
+    /** @param list<Matchup> $matchups */
     public function __construct(
         public readonly int $id,
-        public readonly array $head2Heads,
+        public readonly array $matchups,
     ) {
     }
 
