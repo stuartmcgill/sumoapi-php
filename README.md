@@ -10,6 +10,7 @@ is available:
 - Fetch a rikishi's matches
 - Fetch multiple rikishi (by IDs)
 - Fetch multiple rikishi (by division)
+- Fetch rikishi matchups
 
 # Installation
 
@@ -70,6 +71,11 @@ echo 'Fetched details for ' . count($someRikishi) . ' wrestlers';
 // Fetch rikishi and filter by division
 $someRikishi = $service->fetchDivision('Makuuchi');
 echo 'Fetched details for ' . count($someRikishi) . ' Makuuchi wrestlers';
+
+// Fetch rikishi matchups (head-to-heads)
+$head2HeadSummary = $service->fetchMatchups(1, [2]);
+echo 'Asanoyama has fought Takakeisho' . count($head2HeadSummary) . ' times';
+
 ```
 
 ### Output

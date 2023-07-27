@@ -96,12 +96,7 @@ class RikishiService
      */
     public function fetchSome(array $ids): array
     {
-        if (count($ids) > self::MAX_PARALLEL_CALLS) {
-            throw new InvalidArgumentException(
-                'The maximum number of IDs that can be requested in one call is '
-                . self::MAX_PARALLEL_CALLS
-            );
-        }
+        $this->assertMaxParallelCalls(count($ids));
 
         $baseUrl = self::URL . 'rikishi/';
 
@@ -170,7 +165,31 @@ class RikishiService
     /** @param list<int> $opponents */
     public function fetchHead2Heads(int $id, array $opponents): Head2HeadSummary
     {
-        if (count($opponents) > self::MAX_PARALLEL_CALLS) {
+        $this->assertMaxParallelCalls(count($opponents));
+
+        $baseUrl = self::URL . "rikishi/$id/matches/";
+
+        $promises = array_map(
+            callback: fn (int $id) => $this->httpClient->getAsync($baseUrl . $id),
+            array: array_values($opponents),
+        );
+        $responses = Utils::settle(Utils::unwrap($promises))->wait();
+
+        $factory = new Head2HeadFactory();
+
+        return Head2HeadSummary::build(
+            $id,
+            array_values(array_map(
+                static fn (array $response) =>
+                    $factory->build(json_decode((string)$response['value']->getBody())),
+                    $responses,
+                )
+        );
+    }
+
+    private function assertMaxParallelCalls(int $numCalls): void
+    {
+        if ($numCalls > self::MAX_PARALLEL_CALLS) {
             throw new InvalidArgumentException(
                 'The maximum number of IDs that can be requested in one call is '
                 . self::MAX_PARALLEL_CALLS
