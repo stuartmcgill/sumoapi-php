@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Unit\Service;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
 use Mockery;
@@ -146,7 +144,7 @@ class RikishiServiceTest extends TestCase
     {
         $id = 1;
         $otherIds = [2, 3];
-        
+
         $mockClient = $this->mockFetchMatchups(
             [
                 2 => ['wins' => 10, 'losses' => 20],
@@ -247,13 +245,14 @@ class RikishiServiceTest extends TestCase
         return $mockClient;
     }
 
-    private function mockFetchMatchups(array $matchups)
+    /** @param array<int, array<string, int>> $matchups */
+    private function mockFetchMatchups(array $matchups): Client
     {
         $mockResponses = array_map(
             callback: static fn($matchup) => new Response(
                 status: 200,
-                headers: ['X-Foo' => 'Bar'],
-                body: '{"opponentWins": ' . $matchup['losses'] .',"rikishiWins": ' . $matchup['wins'] .'}',
+                body: '{"opponentWins": ' . $matchup['losses']
+                    . ',"rikishiWins": ' . $matchup['wins'] . '}',
             ),
             array: $matchups
         );

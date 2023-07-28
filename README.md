@@ -72,6 +72,9 @@ echo 'Fetched details for ' . count($someRikishi) . ' wrestlers';
 $someRikishi = $service->fetchDivision('Makuuchi');
 echo 'Fetched details for ' . count($someRikishi) . ' Makuuchi wrestlers';
 
+$rikishisFromThePast = $bashoService->fetchRikishiIdsByBasho(2019, 3, 'Makuuchi');
+echo 'Rikishi IDs from March 2019 are ' . implode(',', $rikishisFromThePast) . "\n";
+
 // Fetch rikishi matchups (head-to-heads)
 $matchupSummary = $service->fetchMatchups(1, [2]);
 echo 'Asanoyama has fought Takakeisho' . count($matchupSummary) . ' times';

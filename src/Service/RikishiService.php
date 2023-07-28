@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace StuartMcGill\SumoApiPhp\Service;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Request;
@@ -184,8 +183,15 @@ class RikishiService
         $matchups = [];
         $pool = new Pool($this->httpClient, $requests(), [
             'concurrency' => 5,
-            'fulfilled' => function (Response $response, $index) use ($rikishiId, $opponentIds, &$matchups, $factory) {
-                // this is delivered each successful response
+            'fulfilled' => function (
+                Response $response,
+                $index,
+            ) use (
+                $rikishiId,
+                $opponentIds,
+                &$matchups,
+                $factory,
+            ) {
                 $opponentId = $opponentIds[$index];
                 $json = json_decode((string)$response->getBody());
 
