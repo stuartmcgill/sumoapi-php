@@ -20,7 +20,7 @@ class MatchupTest extends TestCase
             rikishiWins: 0,
             opponentWins: 0,
         );
-        $this->assertSame(null, $matchup->winningPercentage());
+        $this->assertNull($matchup->winningPercentage());
     }
 
     #[DataProvider('winningPercentageProvider')]
