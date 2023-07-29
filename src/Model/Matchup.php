@@ -35,9 +35,9 @@ class Matchup implements JsonSerializable
     {
         return [
             'rikishiId' => $this->rikishiId,
-            'opponentId' => $this->rikishiId,
-            'rikishiWins' => $this->rikishiId,
-            'opponentWins' => $this->rikishiId,
+            'opponentId' => $this->opponentId,
+            'rikishiWins' => $this->rikishiWins,
+            'opponentWins' => $this->opponentWins,
             'winningPercentage' => $this->winningPercentage(),
         ];
     }

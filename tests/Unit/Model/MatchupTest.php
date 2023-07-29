@@ -64,11 +64,15 @@ class MatchupTest extends TestCase
         $matchup = new Matchup(
             rikishiId: 1,
             opponentId: 2,
-            rikishiWins: 1,
-            opponentWins: 1,
+            rikishiWins: 6,
+            opponentWins: 3,
         );
         $json = json_decode(json_encode($matchup));
 
-        $this->assertSame(50, $json->winningPercentage);
+        $this->assertSame(67, $json->winningPercentage);
+        $this->assertSame(1, $json->rikishiId);
+        $this->assertSame(2, $json->opponentId);
+        $this->assertSame(6, $json->rikishiWins);
+        $this->assertSame(3, $json->opponentWins);
     }
 }
