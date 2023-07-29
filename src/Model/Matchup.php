@@ -31,7 +31,7 @@ class Matchup implements JsonSerializable
     }
 
     /** @return array<string, mixed> */
-    function jsonSerialize(): array
+    public function jsonSerialize(): array
     {
         return [
             'rikishiId' => $this->rikishiId,

@@ -183,8 +183,10 @@ class RikishiService
                 'fulfilled' => function (
                     Response $response,
                     $index,
-                ) use (&$opponentRecords, $opponentIds)
-                {
+                ) use (
+                    &$opponentRecords,
+                    $opponentIds
+                ) {
                     $opponentId = $opponentIds[$index];
                     $record = json_decode((string)$response->getBody());
 
