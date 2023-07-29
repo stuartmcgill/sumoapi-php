@@ -179,7 +179,7 @@ class RikishiService
             $this->httpClient,
             $this->generateMatchupRequests($rikishiId, $opponentIds),
             [
-                'concurrency' => 5,
+                'concurrency' => 10,
                 'fulfilled' => function (
                     Response $response,
                     $index,
