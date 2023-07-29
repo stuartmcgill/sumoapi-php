@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StuartMcGill\SumoApiPhp\Service;
 
+use Generator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Promise\Utils;
@@ -170,38 +171,47 @@ class RikishiService
     public function fetchMatchups(int $rikishiId, array $opponentIds): MatchupSummary
     {
         $this->assertMaxParallelCalls(count($opponentIds));
+        $opponentRecords = array_flip($opponentIds);
 
-        $baseUrl = self::URL . "rikishi/$rikishiId/matches/";
+        $pool = new Pool(
+            $this->httpClient,
+            $this->generateMatchupRequests($rikishiId, $opponentIds),
+            [
+                'concurrency' => 5,
+                'fulfilled' => function (
+                    Response $response,
+                    $index,
+                ) use (&$opponentRecords, $opponentIds)
+                {
+                    $opponentId = $opponentIds[$index];
+                    $json = json_decode((string)$response->getBody());
 
-        $requests = function () use ($opponentIds, $baseUrl) {
-            foreach ($opponentIds as $opponentId) {
-                yield new Request('GET', $baseUrl . $opponentId);
-            }
-        };
-
-        $factory = new MatchupFactory();
-        $matchups = [];
-        $pool = new Pool($this->httpClient, $requests(), [
-            'concurrency' => 5,
-            'fulfilled' => function (
-                Response $response,
-                $index,
-            ) use (
-                $rikishiId,
-                $opponentIds,
-                &$matchups,
-                $factory,
-            ) {
-                $opponentId = $opponentIds[$index];
-                $json = json_decode((string)$response->getBody());
-
-                $matchups[] = $factory->build($rikishiId, $opponentId, $json);
-            },
-        ]);
+                    $opponentRecords[$opponentId] = $json;
+                },
+            ],
+        );
         $promise = $pool->promise();
         $promise->wait();
 
+        $factory = new MatchupFactory();
+        $matchups = [];
+        $matchups[] = array_map(
+            callback: static fn(string $json) => $factory->build($rikishiId, $opponentId, $json),
+            array: $opponentRecords,
+        );
+
         return new MatchupSummary($rikishiId, $matchups);
+    }
+
+    /** @param list<int> $opponentIds */
+    private function generateMatchupRequests(int $rikishiId, array $opponentIds): Generator
+    {
+        foreach ($opponentIds as $opponentId) {
+            yield new Request(
+                'GET',
+                self::URL . "rikishi/$rikishiId/matches/" . $opponentId,
+            );
+        }
     }
 
     private function assertMaxParallelCalls(int $numCalls): void
