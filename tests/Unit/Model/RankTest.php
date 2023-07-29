@@ -83,7 +83,7 @@ class RankTest extends TestCase
         $this->assertSame(expected: $expected, actual: $rankA->isGreaterThan($rankB));
     }
 
-    /** @return array<string, array<string, string>> */
+    /** @return array<string, array<string, mixed>> */
     public static function isGreaterThanProvider(): array
     {
         return [

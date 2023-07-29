@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Unit\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
@@ -12,6 +14,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use StuartMcGill\SumoApiPhp\Model\Matchup;
 use StuartMcGill\SumoApiPhp\Service\RikishiService;
 
 class RikishiServiceTest extends TestCase
@@ -86,6 +89,9 @@ class RikishiServiceTest extends TestCase
         $service = new RikishiService(Mockery::mock(Client::class), []);
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The maximum number of IDs that can be requested in one call is 50',
+        );
         $service->fetchSome(array_fill(0, 51, 0));
     }
 
@@ -131,6 +137,49 @@ class RikishiServiceTest extends TestCase
 
         $service = new RikishiService(Mockery::mock(Client::class), ['divisions' => ['First']]);
         $service->fetchDivision('Second');
+    }
+
+    #[Test]
+    public function fetchMatchups(): void
+    {
+        $id = 1;
+        $otherIds = [2, 3];
+
+        $mockClient = $this->mockFetchMatchups(
+            [
+                2 => ['wins' => 10, 'losses' => 20],
+                3 => ['wins' => 30, 'losses' => 0],
+            ],
+        );
+
+        $service = $this->createService($mockClient);
+        $matchupSummary = $service->fetchMatchups($id, $otherIds);
+
+        $this->assertSame(1, $matchupSummary->rikishiId);
+        $this->assertCount(2, $matchupSummary->matchups);
+
+        $this->assertEquals(
+            [
+                new Matchup(rikishiId: 1, opponentId: 2, rikishiWins: 10, opponentWins: 20),
+                new Matchup(rikishiId: 1, opponentId: 3, rikishiWins: 30, opponentWins: 0),
+            ],
+            $matchupSummary->matchups,
+        );
+    }
+
+    #[Test]
+    public function fetchMatchupsWithTooManyOpponents(): void
+    {
+        $service = new RikishiService(Mockery::mock(Client::class), []);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'The maximum number of IDs that can be requested in one call is 50',
+        );
+        $service->fetchMatchups(
+            rikishiId: 1,
+            opponentIds: array_fill(start_index: 0, count: 51, value: 0),
+        );
     }
 
     private function mockFetchAll(): Client
@@ -194,6 +243,22 @@ class RikishiServiceTest extends TestCase
         }
 
         return $mockClient;
+    }
+
+    /** @param array<int, array<string, int>> $matchups */
+    private function mockFetchMatchups(array $matchups): Client
+    {
+        $mockResponses = array_map(
+            callback: static fn($matchup) => new Response(
+                status: 200,
+                body: '{"opponentWins": ' . $matchup['losses']
+                    . ',"rikishiWins": ' . $matchup['wins'] . '}',
+            ),
+            array: $matchups
+        );
+
+        $mockHandler = new MockHandler($mockResponses);
+        return new Client(['handler' => HandlerStack::create($mockHandler)]);
     }
 
     private function createService(Client $httpClient): RikishiService

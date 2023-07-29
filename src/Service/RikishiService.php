@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace StuartMcGill\SumoApiPhp\Service;
 
+use Generator;
 use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
 use GuzzleHttp\Promise\Utils;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
 use stdClass;
+use StuartMcGill\SumoApiPhp\Factory\MatchupFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiFactory;
 use StuartMcGill\SumoApiPhp\Factory\RikishiMatchFactory;
+use StuartMcGill\SumoApiPhp\Model\MatchupSummary;
 use StuartMcGill\SumoApiPhp\Model\Rank;
 use StuartMcGill\SumoApiPhp\Model\Rikishi;
 use StuartMcGill\SumoApiPhp\Model\RikishiMatch;
@@ -95,12 +101,7 @@ class RikishiService
      */
     public function fetchSome(array $ids): array
     {
-        if (count($ids) > self::MAX_PARALLEL_CALLS) {
-            throw new InvalidArgumentException(
-                'The maximum number of IDs that can be requested in one call is '
-                . self::MAX_PARALLEL_CALLS
-            );
-        }
+        $this->assertMaxParallelCalls(count($ids));
 
         $baseUrl = self::URL . 'rikishi/';
 
@@ -164,6 +165,66 @@ class RikishiService
             callback: static fn (stdClass $rikishiData) => $factory->build($rikishiData),
             array:$divisionData
         ));
+    }
+
+    /** @param list<int> $opponentIds */
+    public function fetchMatchups(int $rikishiId, array $opponentIds): MatchupSummary
+    {
+        $this->assertMaxParallelCalls(count($opponentIds));
+
+        // Prepare and populate an array of head-to-head records keyed by the opponent ID
+        $opponentRecords = array_flip($opponentIds);
+
+        $pool = new Pool(
+            $this->httpClient,
+            $this->generateMatchupRequests($rikishiId, $opponentIds),
+            [
+                'concurrency' => 10,
+                'fulfilled' => function (
+                    Response $response,
+                    $index,
+                ) use (
+                    &$opponentRecords,
+                    $opponentIds
+                ) {
+                    $opponentId = $opponentIds[$index];
+                    $record = json_decode((string)$response->getBody());
+
+                    $opponentRecords[$opponentId] = $record;
+                },
+            ],
+        );
+        $promise = $pool->promise();
+        $promise->wait();
+
+        $factory = new MatchupFactory();
+        $matchups = [];
+        foreach ($opponentRecords as $opponentId => $record) {
+            $matchups[] = $factory->build($rikishiId, $opponentId, $record);
+        }
+
+        return new MatchupSummary($rikishiId, $matchups);
+    }
+
+    /** @param list<int> $opponentIds */
+    private function generateMatchupRequests(int $rikishiId, array $opponentIds): Generator
+    {
+        foreach ($opponentIds as $opponentId) {
+            yield new Request(
+                'GET',
+                self::URL . "rikishi/$rikishiId/matches/" . $opponentId,
+            );
+        }
+    }
+
+    private function assertMaxParallelCalls(int $numCalls): void
+    {
+        if ($numCalls > self::MAX_PARALLEL_CALLS) {
+            throw new InvalidArgumentException(
+                'The maximum number of IDs that can be requested in one call is '
+                . self::MAX_PARALLEL_CALLS
+            );
+        }
     }
 
     /** @codeCoverageIgnore */

@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.5.0] - 2023-07-27
+
+### Added
+- Matchups API
+
 ## [0.4.8] - 2023-07-10
 
 ### Added
