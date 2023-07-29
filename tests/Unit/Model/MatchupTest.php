@@ -57,4 +57,18 @@ class MatchupTest extends TestCase
             ],
         ];
     }
+
+    #[Test]
+    public function jsonSerializable(): void
+    {
+        $matchup = new Matchup(
+            rikishiId: 1,
+            opponentId: 2,
+            rikishiWins: 1,
+            opponentWins: 1,
+        );
+        $json = json_decode(json_encode($matchup));
+
+        $this->assertSame(50, $json->winningPercentage);
+    }
 }

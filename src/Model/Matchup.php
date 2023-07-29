@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace StuartMcGill\SumoApiPhp\Model;
 
-class Matchup
+use JsonSerializable;
+
+class Matchup implements JsonSerializable
 {
     public function __construct(
         public readonly int $rikishiId,
@@ -26,5 +28,17 @@ class Matchup
         }
 
         return (int)round($this->rikishiWins / $this->total() * 100);
+    }
+
+    /** @return array<string, mixed> */
+    function jsonSerialize(): array
+    {
+        return [
+            'rikishiId' => $this->rikishiId,
+            'opponentId' => $this->rikishiId,
+            'rikishiWins' => $this->rikishiId,
+            'opponentWins' => $this->rikishiId,
+            'winningPercentage' => $this->winningPercentage(),
+        ];
     }
 }

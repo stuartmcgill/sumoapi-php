@@ -171,6 +171,8 @@ class RikishiService
     public function fetchMatchups(int $rikishiId, array $opponentIds): MatchupSummary
     {
         $this->assertMaxParallelCalls(count($opponentIds));
+
+        // Prepare and populate an array of head-to-head records keyed by the opponent ID
         $opponentRecords = array_flip($opponentIds);
 
         $pool = new Pool(
@@ -184,9 +186,9 @@ class RikishiService
                 ) use (&$opponentRecords, $opponentIds)
                 {
                     $opponentId = $opponentIds[$index];
-                    $json = json_decode((string)$response->getBody());
+                    $record = json_decode((string)$response->getBody());
 
-                    $opponentRecords[$opponentId] = $json;
+                    $opponentRecords[$opponentId] = $record;
                 },
             ],
         );
@@ -195,10 +197,9 @@ class RikishiService
 
         $factory = new MatchupFactory();
         $matchups = [];
-        $matchups[] = array_map(
-            callback: static fn(string $json) => $factory->build($rikishiId, $opponentId, $json),
-            array: $opponentRecords,
-        );
+        foreach ($opponentRecords as $opponentId => $record) {
+            $matchups[] = $factory->build($rikishiId, $opponentId, $record);
+        }
 
         return new MatchupSummary($rikishiId, $matchups);
     }
