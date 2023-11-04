@@ -25,7 +25,7 @@ class Rank
         if (count($matches) === 0) {
             $this->number = null;
             $this->side = '';
-            
+
             return;
         }
 
