@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.5.1] - 2023-11-04
+
+### Changed
+- Composer update
+
 ## [0.5.0] - 2023-07-27
 
 ### Added
