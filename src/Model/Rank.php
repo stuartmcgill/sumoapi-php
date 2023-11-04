@@ -7,7 +7,7 @@ namespace StuartMcGill\SumoApiPhp\Model;
 class Rank
 {
     public readonly SubDivision $subDivision;
-    public readonly int $number;
+    public readonly ?int $number;
     public readonly string $side;
 
     public function __construct(private readonly string $apiRank)
@@ -23,6 +23,9 @@ class Rank
         // We always want at least a sub-division
         $this->subDivision = new SubDivision($matches[1] ?? $this->apiRank);
         if (count($matches) === 0) {
+            $this->number = null;
+            $this->side = '';
+
             return;
         }
 
