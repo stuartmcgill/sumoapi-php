@@ -36,10 +36,10 @@ class BashoService
     ): ?Rikishi {
         $data = $this->fetchBanzuke($year, $month, $division);
 
-        $matches = array_filter(
+        $matches = array_values(array_filter(
             array: array_merge($data->east, $data->west),
             callback: static fn (stdClass $rikishi) => $rikishi->rikishiID === $rikishiId,
-        );
+        ));
 
         if(count($matches) === 0) {
             return null;
