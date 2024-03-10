@@ -31,12 +31,14 @@ class RikishiService
     {
     }
 
-    public function fetch(int $rikishiId): Rikishi
+    public function fetch(int $rikishiId): ?Rikishi
     {
         $response = $this->httpClient->get(self::URL . "rikishi/$rikishiId");
         $json = (string)$response->getBody();
 
-        return (new RikishiFactory())->build(json_decode($json));
+        return $json === ''
+            ? null
+            : (new RikishiFactory())->build(json_decode($json));
     }
 
     /** @return list<Rikishi> */

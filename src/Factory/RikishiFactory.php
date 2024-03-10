@@ -14,9 +14,9 @@ class RikishiFactory
     {
         return new Rikishi(
             $rikishiData->id,
+            $rikishiData->shikonaEn,
             $rikishiData->sumodbId ?? null,
             $rikishiData->nskId ?? null,
-            $rikishiData->shikonaEn,
             $rikishiData->shikonaJp ?? null,
             $rikishiData->currentRank ?? null,
             $rikishiData->heya ?? null,
@@ -24,7 +24,7 @@ class RikishiFactory
             $rikishiData->shusshin ?? null,
             $rikishiData->height ?? null,
             $rikishiData->weight ?? null,
-            $rikishiData->debut,
+            $rikishiData->debut ?? null,
         );
     }
 }
