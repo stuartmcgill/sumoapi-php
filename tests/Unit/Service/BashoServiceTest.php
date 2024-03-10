@@ -65,4 +65,43 @@ class BashoServiceTest extends TestCase
             actual: $rikishiIds,
         );
     }
+
+    #[Test]
+    public function getRikishiFromBanzuke(): void
+    {
+        $response = Mockery::mock(Response::class);
+        $response
+            ->expects('getBody->__toString')
+            ->once()
+            ->andReturn('{
+                "east": [
+                    {
+                        "rikishiID": 1,
+                        "shikonaEn": "Rikishi 1",
+                        "rank": "Yokozuna 1 East"
+                    }
+                ],
+                "west": [
+                    {
+                        "rikishiID": 2,
+                        "shikonaEn": "Rikishi 2",
+                        "rank": "Yokozuna 2 West"
+                    }
+                ]
+            }');
+
+        $this->httpClient->expects('get')->once()->andReturn($response);
+
+        $bashoService = new BashoService($this->httpClient);
+        $rikishi = $bashoService->getRikishiFromBanzuke(
+            year: 2023,
+            month: 3,
+            division: 'TEST_DIVISION',
+            rikishiId: 1,
+        );
+
+        $this->assertSame(expected: 1, actual: $rikishi->id);
+        $this->assertSame(expected: "Rikishi 1", actual: $rikishi->shikonaEn);
+        $this->assertSame(expected: "Yokozuna 1 East", actual: $rikishi->currentRank);
+    }
 }
