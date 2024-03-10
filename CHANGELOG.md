@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.7.1] - 2024-03-10
+
+### Fixed
+- Fix bug when fetching non-existent rikishi
+
 ## [0.7.0] - 2024-03-10
 
 ### Changed
