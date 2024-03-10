@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.7.0] - 2024-03-10
+
+### Changed
+- Minimum dependency PHP 8.3
+- Composer update
+
 ## [0.6.0] - 2023-11-04
 
 ### Changed
