@@ -37,6 +37,19 @@ class RikishiServiceTest extends TestCase
     }
 
     #[Test]
+    public function fetchNonExistent(): void
+    {
+        $mockClient = $this->mockFetchOne(
+            id: 1,
+            json: '',
+        );
+
+        $service = $this->createService($mockClient);
+
+        $this->assertNull($service->fetch(1));
+    }
+
+    #[Test]
     public function fetchAll(): void
     {
         $service = $this->createService($this->mockFetchAll());
