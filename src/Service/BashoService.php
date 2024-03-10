@@ -41,11 +41,11 @@ class BashoService
             callback: static fn (stdClass $rikishi) => $rikishi->rikishiID === $rikishiId,
         ));
 
-        if(count($matches) === 0) {
+        if (count($matches) === 0) {
             return null;
         }
 
-        $rikishiData = new stdClass;
+        $rikishiData = new stdClass();
         $rikishiData->id = $matches[0]->rikishiID;
         $rikishiData->shikonaEn = $matches[0]->shikonaEn;
         $rikishiData->currentRank = $matches[0]->rank;
