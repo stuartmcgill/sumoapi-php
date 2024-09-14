@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.8.1] - 2024-09-14
+
+### Fixed
+- Return [] instead of `null` when no more kimarite to return
+
 ## [0.8.0] - 2024-09-14
 
 ### Added
