@@ -17,7 +17,7 @@ class KimariteService
     {
     }
 
-    /** @return ?list<RikishiMatch> */
+    /** @return list<RikishiMatch> */
     public function fetchByType(
         string $type,
         ?string $sortOrder = 'asc',
