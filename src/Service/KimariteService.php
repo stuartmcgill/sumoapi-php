@@ -24,7 +24,7 @@ class KimariteService
         ?int $limit = 0,
         ?int $skip = 0,
     ): array {
-        $response = $this->httpClient->get(self::URL . "kimarite/$type");
+        $response = $this->httpClient->get(self::URL . "kimarite/$type?limit=$limit&skip=$skip");
         $data = json_decode((string)$response->getBody());
 
         $factory = new RikishiMatchFactory();
