@@ -11,6 +11,7 @@ is available:
 - Fetch multiple rikishi (by IDs)
 - Fetch multiple rikishi (by division)
 - Fetch rikishi matchups
+- Fetch kimarite (by type)
 
 # Installation
 
@@ -91,3 +92,28 @@ Fetched details for 2 wrestlers
 Fetched details for 42 Makuuchi wrestlers
 Takakeisho has fought Asanoyama 9 times⏎   
 ```
+
+## Kimarite API
+
+### Sample code
+
+```php
+#!/bin/env php
+<?php
+
+declare(strict_types=1);
+
+namespace StuartMcGill\SumoApiTester;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use StuartMcGill\SumoApiPhp\Service\KimariteService;
+
+$kimariteService = KimariteService::factory();
+
+// Fetch last three matches where the kimarite was yorikiri
+$matches = $kimariteService->fetchByType(type: 'yorikiri', sortOrder: 'desc', limit: 3, skip: 0);
+echo 'The last three matches where the kimarite was yorikiri are ' . implode(',', $matches) . "\n";
+```
+
+### Output
