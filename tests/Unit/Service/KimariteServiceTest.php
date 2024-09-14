@@ -77,6 +77,6 @@ class KimariteServiceTest extends TestCase
             type: 'yorikiri',
         );
 
-        $this->assertCount(1, $matches);
+        $this->assertCount(2, $matches);
     }
 }
