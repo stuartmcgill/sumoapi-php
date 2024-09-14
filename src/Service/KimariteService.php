@@ -23,7 +23,7 @@ class KimariteService
         ?string $sortOrder = 'asc',
         ?int $limit = 0,
         ?int $skip = 0,
-    ): ?array {
+    ): array {
         $response = $this->httpClient->get(
             self::URL . "kimarite/$type?sortOrder=$sortOrder&limit=$limit&skip=$skip"
         );
