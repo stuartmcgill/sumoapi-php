@@ -41,7 +41,7 @@ class RikishiMatch
     public function loserEn(): string
     {
         return $this->eastShikona === $this->winnerEn
-            ? $this->eastShikona
-            : $this->westShikona;
+            ? $this->westShikona
+            : $this->eastShikona;
     }
 }
