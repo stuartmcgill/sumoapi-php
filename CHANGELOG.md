@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.8.0] - 2024-09-14
+
+### Added
+- Kimarite API
+
 ## [0.7.1] - 2024-03-10
 
 ### Fixed

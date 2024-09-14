@@ -45,23 +45,23 @@ class RankTest extends TestCase
         return [
             'Juryo' => [
                 'apiRank' => 'Juryo 1 East',
-                'division' => 'Juryo',
+                'expectedDivision' => 'Juryo',
             ],
             'Makushita' => [
                 'apiRank' => 'Makushita 60 West',
-                'division' => 'Makushita',
+                'expectedDivision' => 'Makushita',
             ],
             'Sandanme' => [
                 'apiRank' => 'Sandanme 12 East',
-                'division' => 'Sandanme',
+                'expectedDivision' => 'Sandanme',
             ],
             'Jonidan' => [
                 'apiRank' => 'Jonidan 45 East',
-                'division' => 'Jonidan',
+                'expectedDivision' => 'Jonidan',
             ],
             'Jonokuchi' => [
                 'apiRank' => 'Jonokuchi 4 West',
-                'division' => 'Jonokuchi',
+                'expectedDivision' => 'Jonokuchi',
             ],
         ];
     }
@@ -88,78 +88,78 @@ class RankTest extends TestCase
     {
         return [
             'Same' => [
-                'a' => 'Maegashira 1 East',
-                'b' => 'Maegashira 1 East',
+                'apiRankA' => 'Maegashira 1 East',
+                'apiRankB' => 'Maegashira 1 East',
                 'expected' => false,
             ],
             'Same division and number, a is greater' => [
-                'a' => 'Maegashira 1 East',
-                'b' => 'Maegashira 1 West',
+                'apiRankA' => 'Maegashira 1 East',
+                'apiRankB' => 'Maegashira 1 West',
                 'expected' => true,
             ],
             'Same division and number, a is lesser' => [
-                'a' => 'Maegashira 1 West',
-                'b' => 'Maegashira 1 East',
+                'apiRankA' => 'Maegashira 1 West',
+                'apiRankB' => 'Maegashira 1 East',
                 'expected' => false,
             ],
             'Same division but different number, a is greater' => [
-                'a' => 'Maegashira 1 West',
-                'b' => 'Maegashira 2 East',
+                'apiRankA' => 'Maegashira 1 West',
+                'apiRankB' => 'Maegashira 2 East',
                 'expected' => true,
             ],
             'Same division but different number, a is lesser' => [
-                'a' => 'Maegashira 2 West',
-                'b' => 'Maegashira 1 East',
+                'apiRankA' => 'Maegashira 2 West',
+                'apiRankB' => 'Maegashira 1 East',
                 'expected' => false,
             ],
             'Yokozuna and Maegashira, a greater' => [
-                'a' => 'Yokozuna 1 East',
-                'b' => 'Maegashira 1 East',
+                'apiRankA' => 'Yokozuna 1 East',
+                'apiRankB' => 'Maegashira 1 East',
                 'expected' => true,
             ],
             'Yokozuna and Maegashira, a lesser' => [
-                'a' => 'Maegashira 1 East',
-                'b' => 'Yokozuna 1 East',
+                'apiRankA' => 'Maegashira 1 East',
+                'apiRankB' => 'Yokozuna 1 East',
                 'expected' => false,
             ],
             'Intra-sanyaku, a greater' => [
-                'a' => 'Yokozuna 2 East',
-                'b' => 'Ozeki 1 East',
+                'apiRankA' => 'Yokozuna 2 East',
+                'apiRankB' => 'Ozeki 1 East',
                 'expected' => true,
             ],
             'Intra-sanyaku, a lesser' => [
-                'a' => 'Sekiwake 2 East',
-                'b' => 'Ozeki 1 East',
+                'apiRankA' => 'Sekiwake 2 East',
+                'apiRankB' => 'Ozeki 1 East',
                 'expected' => false,
             ],
             'Different division, a greater' => [
-                'a' => 'Maegashira 1 East',
-                'b' => 'Juryo 1 East',
+                'apiRankA' => 'Maegashira 1 East',
+                'apiRankB' => 'Juryo 1 East',
                 'expected' => true,
             ],
             'Different division, a lesser' => [
-                'a' => 'Sandanme 1 East',
-                'b' => 'Juryo 1 East',
+                'apiRankA' => 'Sandanme 1 East',
+                'apiRankB' => 'Juryo 1 East',
                 'expected' => false,
             ],
             'Alphanumeric check, a lesser' => [
-                'a' => 'Sandanme 10 East',
-                'b' => 'Sandanme 1 East',
+                'apiRankA' => 'Sandanme 10 East',
+                'apiRankB' => 'Sandanme 1 East',
                 'expected' => false,
             ],
             'Alphanumeric check, a greater' => [
-                'a' => 'Sandanme 1 East',
-                'b' => 'Sandanme 10 East',
+                'apiRankA' => 'Sandanme 1 East',
+                'apiRankB' => 'Sandanme 10 East',
                 'expected' => true,
             ],
             'Check that division is the major factor, a greater' => [
-                'a' => 'Jonidan 2 East',
-                'b' => 'Maegashira 1 West',
+                'apiRankA' => 'Jonidan 2 East',
+                'apiRankB' => 'Maegashira 1 West',
                 'expected' => false,
             ],
             'Check that division is the major factor, a lesser' => [
-                'a' => 'Maegashira 1 West',
-                'b' => 'Jonidan 2 East',
+                'apiRankA' => 'Maegashira 1 West',
+                'apiRankB' => 'Jonidan 2 East',
                 'expected' => true,
             ],
         ];

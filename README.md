@@ -11,6 +11,7 @@ is available:
 - Fetch multiple rikishi (by IDs)
 - Fetch multiple rikishi (by division)
 - Fetch rikishi matchups
+- Fetch kimarite (by type)
 
 # Installation
 
@@ -90,4 +91,38 @@ Takakeisho has won by Oshidashi 193 times
 Fetched details for 2 wrestlers
 Fetched details for 42 Makuuchi wrestlers
 Takakeisho has fought Asanoyama 9 times⏎   
+```
+
+## Kimarite API
+
+### Sample code
+
+```php
+#!/bin/env php
+<?php
+
+declare(strict_types=1);
+
+namespace StuartMcGill\SumoApiTester;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use StuartMcGill\SumoApiPhp\Service\KimariteService;
+
+$kimariteService = KimariteService::factory();
+
+// Fetch last three matches where the kimarite was yorikiri
+$matches = $kimariteService->fetchByType(type: 'yorikiri', sortOrder: 'desc', limit: 3, skip: 0);
+foreach ($matches as $match) {
+    $loser = $match->loserEn();
+    echo "$match->winnerEn defeated $loser by yorikiri in $match->division "
+        . "on day $match->day of the $match->bashoId basho.\n";
+}
+```
+
+### Output
+```
+Onosato defeated Hiradoumi by yorikiri in Makuuchi on day 7 of the 202409 basho.
+Sadanoumi defeated Shirokuma by yorikiri in Makuuchi on day 7 of the 202409 basho.
+Ryuden defeated Kitanowaka by yorikiri in Makuuchi on day 7 of the 202409 basho.
 ```
