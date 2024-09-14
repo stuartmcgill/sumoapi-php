@@ -20,11 +20,13 @@ class KimariteService
     /** @return list<RikishiMatch> */
     public function fetchByType(
         string $type,
-        ?string $sortOrder = 'desc',
+        ?string $sortOrder = 'asc',
         ?int $limit = 0,
         ?int $skip = 0,
     ): array {
-        $response = $this->httpClient->get(self::URL . "kimarite/$type?limit=$limit&skip=$skip");
+        $response = $this->httpClient->get(
+            self::URL . "kimarite/$type?sortOrder=$sortOrder&limit=$limit&skip=$skip"
+        );
         $data = json_decode((string)$response->getBody());
 
         $factory = new RikishiMatchFactory();
