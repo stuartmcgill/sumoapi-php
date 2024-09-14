@@ -30,7 +30,7 @@ class KimariteService
         $data = json_decode((string)$response->getBody());
 
         $factory = new RikishiMatchFactory();
-        $records = $data->records;
+        $records = $data->records ?? [];
 
         return array_map(
             callback: static fn (stdClass $matchData) => $factory->build($matchData),
