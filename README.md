@@ -121,3 +121,8 @@ foreach ($matches as $match) {
 ```
 
 ### Output
+```
+Onosato defeated Hiradoumi by yorikiri in Makuuchi on day 7 of the 202409 basho.
+Sadanoumi defeated Shirokuma by yorikiri in Makuuchi on day 7 of the 202409 basho.
+Ryuden defeated Kitanowaka by yorikiri in Makuuchi on day 7 of the 202409 basho.
+```
