@@ -14,7 +14,7 @@ class RikishiFactory
     {
         return new Rikishi(
             $rikishiData->id,
-            $rikishiData->shikonaEn,
+            $rikishiData->shikonaEn ?? null,
             $rikishiData->sumodbId ?? null,
             $rikishiData->nskId ?? null,
             $rikishiData->shikonaJp ?? null,
