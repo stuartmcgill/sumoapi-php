@@ -10,7 +10,7 @@ readonly class Rikishi
 {
     public function __construct(
         public int $id,
-        public string $shikonaEn,
+        public ?string $shikonaEn,
         public ?int $sumoDbId,
         public ?int $nskId,
         public ?string $shikonaJp,
