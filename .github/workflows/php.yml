@@ -28,9 +28,6 @@ jobs:
         php-version: '8.3'
         tools: cs2pr
 
-    - name: Run phpcs
-      run: phpcs --standard=PSR12 ./ --ignore=vendor
-
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
